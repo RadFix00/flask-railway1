@@ -1,22 +1,12 @@
-from flask import Flask, jsonify
-import psycopg2
 import os
+from flask import Flask
 
 app = Flask(__name__)
 
-# Conectar con PostgreSQL en Railway
-DATABASE_URL = os.getenv("postgresql://postgres:NIJVkfPfpktAhDZeumKhPYrxFiBcGzlu@switchyard.proxy.rlwy.net:37801/railway")
-conn = psycopg2.connect(DATABASE_URL)
-
-@app.route('/productos')
-def get_productos():
-    cur = conn.cursor()
-    cur.execute("SELECT * FROM productos")  # Asegúrate de tener una tabla 'productos'
-    rows = cur.fetchall()
-    cur.close()
-    
-    productos = [{"id": row[0], "nombre": row[1], "precio": row[2]} for row in rows]
-    return jsonify(productos)
+@app.route('/')
+def home():
+    return "¡Servidor en Railway funcionando! 🚀"
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    port = int(os.environ.get("PORT", 5000))  # Usa el puerto que Railway asigna
+    app.run(host='0.0.0.0', port=port)
